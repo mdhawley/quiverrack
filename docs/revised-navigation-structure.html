@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Revised Navigation - QuiverRack</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #0D47A1;
+            --secondary: #00897B;
+            --accent: #FF5252;
+            --snow: #FFFFFF;
+            --rock: #757575;
+            --mist: #F5F5F5;
+            --success: #00897B;
+            --error: #FF5252;
+            --shadow: 0 2px 20px rgba(0,0,0,0.06);
+            --warning: #FFA726;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #F5F7FA;
+            color: var(--rock);
+            line-height: 1.6;
+        }
+        
+        /* Header */
+        .header {
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            transform: rotate(-10deg);
+        }
+        
+        .logo-text {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .main-nav {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            flex: 1;
+            justify-content: center;
+        }
+        
+        .nav-link {
+            color: var(--rock);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 15px;
+            transition: color 0.2s ease;
+            position: relative;
+        }
+        
+        .nav-link:hover {
+            color: var(--primary);
+        }
+        
+        .nav-link.active {
+            color: var(--primary);
+        }
+        
+        /* Right Side Actions */
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .notification-bell {
+            position: relative;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: background 0.2s ease;
+        }
+        
+        .notification-bell:hover {
+            background: var(--mist);
+        }
+        
+        .bell-icon {
+            font-size: 20px;
+            color: var(--rock);
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: var(--accent);
+            color: white;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 2px 5px;
+            border-radius: 10px;
+            min-width: 16px;
+            text-align: center;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 12px;
+            transition: background 0.2s;
+        }
+        
+        .user-menu:hover {
+            background: var(--mist);
+        }
+        
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            background: var(--secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        /* Subnav */
+        .subnav {
+            background: var(--mist);
+            border-top: 1px solid #E0E0E0;
+        }
+        
+        .subnav-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            gap: 8px;
+        }
+        
+        .subnav-link {
+            padding: 12px 20px;
+            color: var(--rock);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            white-space: nowrap;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s ease;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .subnav-link:hover {
+            background: white;
+            color: var(--primary);
+        }
+        
+        .subnav-link.active {
+            color: var(--primary);
+            background: white;
+            border-bottom-color: var(--primary);
+        }
+        
+        .subnav-badge {
+            background: var(--accent);
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 10px;
+            min-width: 18px;
+            text-align: center;
+        }
+        
+        /* Notification Dropdown */
+        .notification-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            width: 380px;
+            margin-top: 8px;
+            display: none;
+            max-height: 480px;
+            overflow: hidden;
+        }
+        
+        .notification-dropdown.show {
+            display: block;
+        }
+        
+        .dropdown-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--mist);
+            display: flex;
+            justify-content: between;
+            align-items: center;
+        }
+        
+        .dropdown-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .notification-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .notification-item {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--mist);
+            transition: background 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .notification-item:hover {
+            background: var(--mist);
+        }
+        
+        .notification-item.unread {
+            background: #F0F7FF;
+            border-left: 3px solid var(--primary);
+        }
+        
+        .notification-content {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .notification-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--mist);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+        
+        .notification-text {
+            flex: 1;
+        }
+        
+        .notification-message {
+            font-size: 14px;
+            color: var(--rock);
+            margin-bottom: 4px;
+        }
+        
+        .notification-time {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        /* Example Pages */
+        .page-example {
+            margin: 40px 0;
+            padding: 40px 20px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .example-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .navigation-map {
+            display: grid;
+            gap: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .nav-section {
+            padding: 20px;
+            background: var(--mist);
+            border-radius: 12px;
+        }
+        
+        .nav-section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 12px;
+        }
+        
+        .nav-items {
+            display: grid;
+            gap: 8px;
+        }
+        
+        .nav-item {
+            padding: 8px 12px;
+            background: white;
+            border-radius: 8px;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nav-description {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        /* Mobile View */
+        .mobile-example {
+            max-width: 400px;
+            margin: 40px auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .mobile-header {
+            background: white;
+            padding: 16px;
+            border-bottom: 1px solid var(--mist);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .mobile-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid var(--mist);
+            padding: 8px 0;
+            display: flex;
+            justify-content: space-around;
+        }
+        
+        .mobile-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px;
+            color: var(--rock);
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 500;
+            position: relative;
+        }
+        
+        .mobile-nav-item.active {
+            color: var(--primary);
+        }
+        
+        .mobile-nav-icon {
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Main Navigation Example -->
+    <header class="header">
+        <div class="header-content">
+            <a href="/" class="logo">
+                <div class="logo-icon">⛷️</div>
+                <div class="logo-text">QuiverRack</div>
+            </a>
+            
+            <nav class="main-nav">
+                <a href="/dashboard" class="nav-link active">Dashboard</a>
+                <a href="/gear/browse" class="nav-link">Browse Gear</a>
+                <a href="/qa" class="nav-link">Community Q&A</a>
+                <a href="/resorts" class="nav-link">Resorts</a>
+                <a href="/stories" class="nav-link">Stories</a>
+            </nav>
+            
+            <div class="nav-actions">
+                <div class="notification-bell">
+                    <span class="bell-icon">🔔</span>
+                    <span class="notification-badge">5</span>
+                    
+                    <!-- Notification Dropdown -->
+                    <div class="notification-dropdown">
+                        <div class="dropdown-header">
+                            <h3 class="dropdown-title">Notifications</h3>
+                        </div>
+                        <div class="notification-list">
+                            <div class="notification-item unread">
+                                <div class="notification-content">
+                                    <div class="notification-icon">💬</div>
+                                    <div class="notification-text">
+                                        <div class="notification-message">
+                                            <strong>@powderhound</strong> answered your question about powder skis
+                                        </div>
+                                        <div class="notification-time">2 hours ago</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="notification-item unread">
+                                <div class="notification-content">
+                                    <div class="notification-icon">🎿</div>
+                                    <div class="notification-text">
+                                        <div class="notification-message">
+                                            <strong>Moment Deathwish 112</strong> price dropped 15%
+                                        </div>
+                                        <div class="notification-time">5 hours ago</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="notification-item">
+                                <div class="notification-content">
+                                    <div class="notification-icon">👍</div>
+                                    <div class="notification-text">
+                                        <div class="notification-message">
+                                            Your answer was marked helpful by 3 users
+                                        </div>
+                                        <div class="notification-time">1 day ago</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="user-menu">
+                    <div class="user-avatar">JD</div>
+                    <span>John</span>
+                    <span style="color: var(--rock); font-size: 12px;">▼</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Personal Dashboard Subnav (shown when on Dashboard) -->
+        <div class="subnav">
+            <div class="subnav-content">
+                <a href="/dashboard" class="subnav-link active">Overview</a>
+                <a href="/profile" class="subnav-link">Profile</a>
+                <a href="/quiver" class="subnav-link">My Quiver</a>
+                <a href="/wishlist" class="subnav-link">
+                    Wishlist
+                    <span class="subnav-badge">3</span>
+                </a>
+                <a href="/my-questions" class="subnav-link">
+                    My Questions
+                    <span class="subnav-badge">2</span>
+                </a>
+                <a href="/settings" class="subnav-link">Settings</a>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Navigation Structure Explanation -->
+    <div class="page-example">
+        <h2 class="example-title">Navigation Structure</h2>
+        
+        <div class="navigation-map">
+            <div class="nav-section">
+                <h3 class="nav-section-title">🌐 Top Navigation (Community Resources)</h3>
+                <div class="nav-items">
+                    <div class="nav-item">
+                        <span><strong>Dashboard</strong></span>
+                        <span class="nav-description">Personal hub (triggers subnav)</span>
+                    </div>
+                    <div class="nav-item">
+                        <span><strong>Browse Gear</strong></span>
+                        <span class="nav-description">Ski database for everyone</span>
+                    </div>
+                    <div class="nav-item">
+                        <span><strong>Community Q&A</strong></span>
+                        <span class="nav-description">All users' questions</span>
+                    </div>
+                    <div class="nav-item">
+                        <span><strong>Resorts</strong></span>
+                        <span class="nav-description">Resort info & conditions</span>
+                    </div>
+                    <div class="nav-item">
+                        <span><strong>Stories</strong></span>
+                        <span class="nav-description">Trip reports & articles</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="nav-section">
+                <h3 class="nav-section-title">👤 Dashboard Subnav (Personal Management)</h3>
+                <div class="nav-items">
+                    <div class="nav-item">
+                        <span><strong>Overview</strong></span>
+                        <span class="nav-description">Personal dashboard home</span>
+                    </div>
+                    <div class="nav-item">
+                        <span><strong>Profile</strong></span>
+                        <span class="nav-description">Edit public profile</span>
+                    </div>
+                    <div class="nav-item">
+                        <span><strong>My Quiver</strong></span>
+                        <span class="nav-description">Manage your skis</span>
+                    </div>
+                    <div class="nav-item">
+                        <span><strong>Wishlist (3)</strong></span>
+                        <span class="nav-description">Saved ski wishlist</span>
+                    </div>
+                    <div class="nav-item">
+                        <span><strong>My Questions (2)</strong></span>
+                        <span class="nav-description">Your Q&A activity</span>
+                    </div>
+                    <div class="nav-item">
+                        <span><strong>Settings</strong></span>
+                        <span class="nav-description">Account preferences</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="nav-section">
+                <h3 class="nav-section-title">🔔 Unified Notifications</h3>
+                <div class="nav-items">
+                    <div class="nav-item">
+                        <span><strong>New Answers</strong></span>
+                        <span class="nav-description">Responses to your questions</span>
+                    </div>
+                    <div class="nav-item">
+                        <span><strong>Price Alerts</strong></span>
+                        <span class="nav-description">Wishlist price drops</span>
+                    </div>
+                    <div class="nav-item">
+                        <span><strong>Community Activity</strong></span>
+                        <span class="nav-description">Upvotes, mentions, etc.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Mobile View Example -->
+    <div class="page-example">
+        <h2 class="example-title">Mobile Navigation</h2>
+        
+        <div class="mobile-example">
+            <div class="mobile-header">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <div style="width: 28px; height: 28px; background: var(--primary); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 16px; color: white;">⛷️</div>
+                    <span style="font-weight: 600; color: var(--primary);">QuiverRack</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <span style="position: relative;">
+                        <span style="font-size: 20px;">🔔</span>
+                        <span style="position: absolute; top: -4px; right: -4px; background: var(--accent); color: white; font-size: 9px; padding: 1px 4px; border-radius: 8px;">5</span>
+                    </span>
+                    <div style="width: 28px; height: 28px; background: var(--secondary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: 600;">JD</div>
+                </div>
+            </div>
+            
+            <div style="height: 400px; padding: 20px; display: flex; align-items: center; justify-content: center; color: #999;">
+                <div style="text-align: center;">
+                    <div style="font-size: 48px; margin-bottom: 16px;">📱</div>
+                    <p>App Content</p>
+                </div>
+            </div>
+            
+            <nav style="position: absolute; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid var(--mist); padding: 8px 0; display: flex; justify-content: space-around;">
+                <a href="#" class="mobile-nav-item active">
+                    <span class="mobile-nav-icon">🏠</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="mobile-nav-item">
+                    <span class="mobile-nav-icon">🔍</span>
+                    <span>Browse</span>
+                </a>
+                <a href="#" class="mobile-nav-item" style="position: relative;">
+                    <span class="mobile-nav-icon">💬</span>
+                    <span>Q&A</span>
+                    <span style="position: absolute; top: 0; right: 8px; background: var(--accent); color: white; font-size: 9px; padding: 1px 4px; border-radius: 8px;">2</span>
+                </a>
+                <a href="#" class="mobile-nav-item">
+                    <span class="mobile-nav-icon">🎿</span>
+                    <span>Quiver</span>
+                </a>
+                <a href="#" class="mobile-nav-item">
+                    <span class="mobile-nav-icon">❤️</span>
+                    <span>Wishlist</span>
+                    <span style="position: absolute; top: 0; right: 8px; background: var(--accent); color: white; font-size: 9px; padding: 1px 4px; border-radius: 8px;">3</span>
+                </a>
+            </nav>
+        </div>
+    </div>
+</body>
+</html>

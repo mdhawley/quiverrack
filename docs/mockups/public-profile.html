@@ -1,0 +1,943 @@
+        /* Tab Navigation */
+        .tab-nav {
+            background: white;
+            border-radius: 16px;
+            padding: 6px;
+            margin-bottom: 24px;
+            display: flex;
+            gap: 4px;
+            box-shadow: var(--shadow);
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 10px 16px;
+            background: transparent;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--rock);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .tab.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .tab:hover:not(.active) {
+            background: var(--mist);
+        }
+        
+        /* Hidden Sections */
+        .tab-content {
+            display: none;
+            background: white;
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: var(--shadow);
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>John Doe - QuiverRack Profile</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #0D47A1;
+            --secondary: #00897B;
+            --accent: #FF5252;
+            --snow: #FFFFFF;
+            --rock: #757575;
+            --mist: #F5F5F5;
+            --success: #00897B;
+            --error: #FF5252;
+            --shadow: 0 2px 20px rgba(0,0,0,0.06);
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #F5F7FA;
+            min-height: 100vh;
+            color: var(--rock);
+            line-height: 1.6;
+        }
+        
+        /* Header */
+        .header {
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 8px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        
+        .logo-icon {
+            width: 28px;
+            height: 28px;
+            background: var(--primary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: white;
+            transform: rotate(-10deg);
+        }
+        
+        .logo-text {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        @media (max-width: 640px) {
+            .header-content {
+                padding: 8px 16px;
+            }
+            
+            .logo-text {
+                display: none;
+            }
+        }
+        
+        /* Profile Container */
+        .profile-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px 20px;
+        }
+        
+        /* Profile Header - Compact */
+        .profile-header {
+            background: white;
+            border-radius: 20px;
+            padding: 20px 24px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            animation: fadeInDown 0.8s ease;
+        }
+        
+        .profile-top {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+        }
+        
+        .profile-info {
+            flex: 1;
+        }
+        
+        .profile-meta {
+            margin-bottom: 10px;
+        }
+        
+        /* Home Mountains Inline */
+        .home-mountains-inline {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+            margin-bottom: 10px;
+            font-size: 15px;
+            color: var(--rock);
+        }
+        
+        .mountains-label {
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .mountain-bubbles {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .mountain-bubble {
+            padding: 4px 12px;
+            background: var(--mist);
+            border: 1px solid var(--mist);
+            border-radius: 20px;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+        
+        .mountain-bubble:hover {
+            background: white;
+            border-color: var(--secondary);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+        }
+        
+        @media (max-width: 768px) {
+            .profile-top {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                gap: 16px;
+            }
+            
+            .profile-header {
+                padding: 16px 20px;
+            }
+        }
+        
+        /* Terrain Section Inline */
+        .terrain-inline {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            font-size: 15px;
+            color: var(--rock);
+        }
+        
+        .terrain-label {
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .terrain-pills {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .terrain-pill {
+            padding: 4px 12px;
+            background: var(--secondary);
+            color: white;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        
+        .terrain-pill:hover {
+            background: #00796B;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 137, 123, 0.2);
+        }
+        
+        @media (max-width: 768px) {
+            .home-mountains-inline,
+            .terrain-inline {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+        }
+        
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            background: var(--secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        
+        .profile-info {
+            flex: 1;
+        }
+        
+        .profile-name {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+        
+        .profile-meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            color: var(--rock);
+            font-size: 15px;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        /* Skill Level Badge */
+        .skill-level-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            margin-left: 16px;
+        }
+        
+        .skill-icon {
+            font-size: 16px;
+        }
+        
+        /* Skill Level Colors - North American System */
+        .skill-level-badge.beginner {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .skill-level-badge.beginner .skill-icon {
+            font-size: 20px;
+        }
+        
+        .skill-level-badge.intermediate {
+            background: #2196F3;
+            color: white;
+        }
+        
+        .skill-level-badge.intermediate .skill-icon {
+            font-size: 18px;
+            transform: rotate(45deg);
+        }
+        
+        .skill-level-badge.advanced {
+            background: #212121;
+            color: white;
+        }
+        
+        .skill-level-badge.advanced .skill-icon {
+            font-size: 16px;
+        }
+        
+        .skill-level-badge.expert {
+            background: #212121;
+            color: white;
+            position: relative;
+        }
+        
+        .skill-level-badge.expert::before {
+            content: '◆';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 16px;
+            opacity: 0.3;
+        }
+        
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 24px;
+            align-items: start;
+        }
+        
+        @media (max-width: 968px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: contents;
+            }
+            
+            .sidebar > * {
+                order: 2;
+            }
+            
+            .quiver-section {
+                order: 1;
+            }
+        }
+        
+        /* Sidebar Cards */
+        .sidebar-card {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+            animation: fadeInRight 0.8s ease;
+            animation-fill-mode: both;
+        }
+        
+        /* Info Sections */
+        .info-section {
+            background: white;
+            border-radius: 20px;
+            padding: 24px 32px;
+            box-shadow: var(--shadow);
+            animation: fadeInUp 0.8s ease;
+            animation-fill-mode: both;
+        }
+        
+        .section-title-small {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        /* Skiing Style */
+        .skiing-style-text {
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--rock);
+        }
+        
+        /* Bio with Accordion */
+        .bio-container {
+            position: relative;
+        }
+        
+        .bio-text {
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--rock);
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            max-height: 72px; /* ~3 lines */
+            position: relative;
+        }
+        
+        .bio-text.expanded {
+            max-height: 500px;
+        }
+        
+        .bio-text::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 20px;
+            background: linear-gradient(transparent, white);
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+        
+        .bio-text.expanded::after {
+            opacity: 0;
+        }
+        
+        .bio-toggle {
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 4px 0;
+            margin-top: 8px;
+            transition: color 0.2s ease;
+        }
+        
+        .bio-toggle:hover {
+            color: var(--secondary);
+        }
+        
+        /* Ski Quiver Section */
+        .quiver-section {
+            background: white;
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: var(--shadow);
+            animation: fadeInLeft 0.8s ease;
+            animation-delay: 0.2s;
+            animation-fill-mode: both;
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+        
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        /* Quiver Photo */
+        .quiver-photo-container {
+            width: 100%;
+            height: 240px;
+            background: var(--mist);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 24px;
+            position: relative;
+        }
+        
+        .quiver-photo-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+        }
+        
+        /* Ski List - Compact */
+        .ski-list {
+            display: grid;
+            gap: 12px;
+        }
+        
+        .ski-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            background: var(--mist);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .ski-item:hover {
+            background: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transform: translateX(4px);
+        }
+        
+        .ski-main {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex: 1;
+        }
+        
+        .ski-icon {
+            font-size: 28px;
+        }
+        
+        .ski-details {
+            flex: 1;
+        }
+        
+        .ski-name {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 16px;
+            margin-bottom: 2px;
+        }
+        
+        .ski-specs {
+            font-size: 14px;
+            color: var(--rock);
+        }
+        
+        .ski-types {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        
+        .ski-type {
+            padding: 3px 8px;
+            background: white;
+            border: 1px solid var(--secondary);
+            color: var(--secondary);
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            display: grid;
+            gap: 20px;
+        }
+        
+        /* Sidebar Cards */
+        .sidebar-card {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+            animation: fadeInRight 0.8s ease;
+            animation-fill-mode: both;
+        }
+        
+        .sidebar-card:nth-child(1) { animation-delay: 0.3s; }
+        .sidebar-card:nth-child(2) { animation-delay: 0.4s; }
+        .sidebar-card:nth-child(3) { animation-delay: 0.5s; }
+        
+        /* Share Card */
+        .share-card {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+            animation: fadeInRight 0.8s ease;
+            animation-delay: 0.5s;
+            animation-fill-mode: both;
+        }
+        
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .share-urls {
+            display: grid;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .url-label {
+            font-size: 12px;
+            color: var(--rock);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .url-display {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            background: var(--mist);
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: monospace;
+            color: var(--primary);
+        }
+        
+        .copy-btn {
+            padding: 6px 12px;
+            background: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .copy-btn:hover {
+            background: #00796B;
+            transform: translateY(-1px);
+        }
+        
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="/" class="logo">
+                <div class="logo-icon">⛷️</div>
+                <div class="logo-text">QuiverRack</div>
+            </a>
+        </div>
+    </header>
+    
+    <!-- Profile Container -->
+    <main class="profile-container">
+        <!-- Compact Profile Header -->
+        <div class="profile-header">
+            <div class="profile-top">
+                <div class="profile-avatar">JD</div>
+                <div class="profile-info">
+                    <h1 class="profile-name">johndoe</h1>
+                    <div class="profile-meta">
+                        <span class="meta-item">
+                            <span>📍</span>
+                            <span>Denver, Colorado</span>
+                        </span>
+                        <span class="meta-item">
+                            <span>•</span>
+                            <span>Dec 2023</span>
+                        </span>
+                        <div class="skill-level-badge expert">
+                            <span class="skill-icon">◆</span>
+                            <span class="skill-text">Expert</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Home Mountains -->
+            <div class="home-mountains-inline">
+                <span class="mountains-label">Home Mountains:</span>
+                <div class="mountain-bubbles">
+                    <span class="mountain-bubble">Mt. Hood Meadows</span>
+                    <span class="mountain-bubble">Timberline</span>
+                    <span class="mountain-bubble">Mt. Hood Skibowl</span>
+                    <span class="mountain-bubble">Mt. Bachelor</span>
+                </div>
+            </div>
+            
+            <!-- Preferred Terrain -->
+            <div class="terrain-inline">
+                <span class="terrain-label">Preferred Terrain:</span>
+                <div class="terrain-pills">
+                    <span class="terrain-pill">Powder</span>
+                    <span class="terrain-pill">Trees</span>
+                    <span class="terrain-pill">Steeps</span>
+                    <span class="terrain-pill">Backcountry</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content Grid -->
+        <div class="main-content">
+            <!-- Left: Ski Quiver Section -->
+            <div class="quiver-section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <span>🎿</span>
+                        Ski Quiver
+                    </h2>
+                </div>
+                
+                <!-- Quiver Photo (if exists) -->
+                <div class="quiver-photo-container">
+                    <div class="quiver-photo-placeholder">
+                        <span style="font-size: 48px;">📸</span>
+                        <p>No quiver photo</p>
+                    </div>
+                </div>
+                
+                <!-- Ski List -->
+                <div class="ski-list">
+                    <div class="ski-item">
+                        <div class="ski-main">
+                            <div class="ski-icon">🎿</div>
+                            <div class="ski-details">
+                                <div class="ski-name">Volkl Mantra M6</div>
+                                <div class="ski-specs">2024 • 184cm • 96mm waist</div>
+                            </div>
+                        </div>
+                        <div class="ski-types">
+                            <span class="ski-type">All-Mountain</span>
+                            <span class="ski-type">Charging</span>
+                        </div>
+                    </div>
+                    
+                    <div class="ski-item">
+                        <div class="ski-main">
+                            <div class="ski-icon">🎿</div>
+                            <div class="ski-details">
+                                <div class="ski-name">Salomon QST 106</div>
+                                <div class="ski-specs">2023 • 181cm • 106mm waist</div>
+                            </div>
+                        </div>
+                        <div class="ski-types">
+                            <span class="ski-type">Powder</span>
+                            <span class="ski-type">All-Mountain</span>
+                        </div>
+                    </div>
+                    
+                    <div class="ski-item">
+                        <div class="ski-main">
+                            <div class="ski-icon">🎿</div>
+                            <div class="ski-details">
+                                <div class="ski-name">Atomic Bent Chetler 100</div>
+                                <div class="ski-specs">2023 • 180cm • 100mm waist</div>
+                            </div>
+                        </div>
+                        <div class="ski-types">
+                            <span class="ski-type">Freestyle</span>
+                            <span class="ski-type">All-Mountain</span>
+                        </div>
+                    </div>
+                    
+                    <div class="ski-item">
+                        <div class="ski-main">
+                            <div class="ski-icon">🎿</div>
+                            <div class="ski-details">
+                                <div class="ski-name">Blizzard Bonafide 97</div>
+                                <div class="ski-specs">2022 • 183cm • 97mm waist</div>
+                            </div>
+                        </div>
+                        <div class="ski-types">
+                            <span class="ski-type">Carving</span>
+                            <span class="ski-type">Groomers</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right: Sidebar -->
+            <aside class="sidebar">
+                <!-- Skiing Style Section -->
+                <div class="sidebar-card">
+                    <h3 class="section-title-small">
+                        <span>💭</span>
+                        Skiing Style
+                    </h3>
+                    <p class="skiing-style-text">
+                        I'm all about finding the perfect balance between charging hard and floating through untouched snow. Give me steep tree runs with deep powder, and I'm in heaven.
+                    </p>
+                </div>
+                
+                <!-- About Section -->
+                <div class="sidebar-card">
+                    <h3 class="section-title-small">
+                        <span>👤</span>
+                        About
+                    </h3>
+                    <div class="bio-container">
+                        <p class="bio-text" id="bioText">
+                            Nothing beats floating through fresh powder on a bluebird day. I live for those moments when the snow is deep, the trees are perfectly spaced, and the only sound is the whisper of snow beneath my skis. Started skiing when I was five years old at our local hill, and now I spend every possible weekend chasing storms and exploring new terrain. When I'm not on the mountain, you'll find me tuning my skis in the garage or planning the next adventure.
+                        </p>
+                        <button class="bio-toggle" onclick="toggleBio()" id="bioToggle">More</button>
+                    </div>
+                </div>
+                
+                <!-- Share Profile -->
+                <div class="share-card">
+                    <h3 class="card-title">
+                        <span>🔗</span>
+                        Share Profile
+                    </h3>
+                    <div class="share-urls">
+                        <div class="url-group">
+                            <div class="url-label">Full URL</div>
+                            <div class="url-display">
+                                <span>quiverrack.com/profile/johndoe</span>
+                                <button class="copy-btn" onclick="copyUrl('full')">Copy</button>
+                            </div>
+                        </div>
+                        <div class="url-group">
+                            <div class="url-label">Short URL</div>
+                            <div class="url-display">
+                                <span>qvrck.com/u/johndoe</span>
+                                <button class="copy-btn" onclick="copyUrl('short')">Copy</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </main>
+    
+    <script>
+        function copyUrl(type) {
+            const url = type === 'short' ? 'https://qvrck.com/u/johndoe' : 'https://quiverrack.com/profile/johndoe';
+            navigator.clipboard.writeText(url).then(() => {
+                const button = event.target;
+                const originalText = button.textContent;
+                button.textContent = '✓';
+                setTimeout(() => {
+                    button.textContent = originalText;
+                }, 1500);
+            });
+        }
+        
+        function toggleBio() {
+            const bioText = document.getElementById('bioText');
+            const bioToggle = document.getElementById('bioToggle');
+            
+            if (bioText.classList.contains('expanded')) {
+                bioText.classList.remove('expanded');
+                bioToggle.textContent = 'More';
+            } else {
+                bioText.classList.add('expanded');
+                bioToggle.textContent = 'Less';
+            }
+        }
+    </script>
+</body>
+</html>

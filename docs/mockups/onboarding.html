@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuiverRack - Create Your Skier Profile</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #0D47A1;
+            --secondary: #00897B;
+            --accent: #FF5252;
+            --snow: #FFFFFF;
+            --rock: #757575;
+            --mist: #F5F5F5;
+            --success: #00897B;
+            --error: #FF5252;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #E8EAF6 0%, #F0F4F3 100%);
+            min-height: 100vh;
+            color: var(--rock);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 768px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        @media (min-width: 768px) {
+            .container {
+                padding: 40px 20px;
+            }
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeInDown 0.8s ease-out;
+        }
+        
+        @media (min-width: 768px) {
+            .header {
+                margin-bottom: 60px;
+            }
+        }
+        
+        .logo {
+            width: 60px;
+            height: 60px;
+            background: var(--primary);
+            border-radius: 15px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            color: white;
+            transform: rotate(-10deg);
+            transition: transform 0.3s ease;
+        }
+        
+        .logo:hover {
+            transform: rotate(0deg) scale(1.1);
+        }
+        
+        h1 {
+            font-size: 28px;
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            color: #757575;
+            font-size: 16px;
+        }
+        
+        .form-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+            animation: fadeInUp 0.8s ease-out;
+            animation-fill-mode: both;
+            border: 1px solid rgba(13, 71, 161, 0.05);
+        }
+        
+        .form-section:nth-child(2) { animation-delay: 0.1s; }
+        .form-section:nth-child(3) { animation-delay: 0.2s; }
+        .form-section:nth-child(4) { animation-delay: 0.3s; }
+        .form-section:nth-child(5) { animation-delay: 0.4s; }
+        
+        @media (min-width: 768px) {
+            .form-section {
+                padding: 40px 35px;
+            }
+        }
+        .form-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px 25px;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+            animation: fadeInUp 0.8s ease-out;
+            animation-fill-mode: both;
+            border: 1px solid rgba(13, 71, 161, 0.05);
+        }
+        
+        @media (min-width: 768px) {
+            .form-section {
+                padding: 40px 35px;
+            }
+        }
+        
+        .section-title {
+            font-size: 18px;
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .required {
+            color: var(--secondary);
+            font-size: 20px;
+        }
+        
+        /* Skill Level Radio Buttons */
+        .skill-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        
+        @media (min-width: 768px) {
+            .skill-options {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 16px;
+            }
+        }
+        
+        .skill-option {
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .skill-option input {
+            position: absolute;
+            opacity: 0;
+        }
+        
+        .skill-label {
+            display: block;
+            padding: 15px 20px;
+            background: var(--snow);
+            border: 2px solid var(--mist);
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .skill-option:hover .skill-label {
+            border-color: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 137, 123, 0.2);
+        }
+        
+        .skill-option input:checked + .skill-label {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            transform: scale(1.05);
+        }
+        
+        /* Terrain Preferences */
+        .terrain-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        
+        @media (min-width: 768px) {
+            .terrain-grid {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 12px;
+                justify-content: flex-start;
+            }
+        }
+        
+        .terrain-pill {
+            padding: 10px 14px;
+            background: var(--snow);
+            border: 2px solid var(--mist);
+            border-radius: 25px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 13px;
+            font-weight: 500;
+            user-select: none;
+            white-space: nowrap;
+        }
+        
+        @media (min-width: 768px) {
+            .terrain-pill {
+                padding: 10px 16px;
+                font-size: 14px;
+                flex: 0 0 auto;
+            }
+        }
+        
+        .terrain-pill:hover {
+            border-color: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(0, 137, 123, 0.2);
+        }
+        
+        .terrain-pill.selected {
+            background: var(--secondary);
+            color: white;
+            border-color: var(--secondary);
+            animation: pillBounce 0.4s ease;
+        }
+        
+        /* Text Area */
+        .textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid var(--mist);
+            border-radius: 12px;
+            font-size: 16px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 100px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        /* Resort Search */
+        .search-wrapper {
+            position: relative;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            border: 2px solid var(--mist);
+            border-radius: 12px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .selected-resorts {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        
+        .resort-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            background: var(--primary);
+            color: white;
+            border-radius: 20px;
+            font-size: 14px;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .resort-tag .remove {
+            cursor: pointer;
+            font-size: 18px;
+            line-height: 1;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+        
+        .resort-tag .remove:hover {
+            opacity: 1;
+        }
+        
+        /* Add Skis Button */
+        .add-skis-button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 24px;
+            background: white;
+            border: 2px dashed var(--secondary);
+            border-radius: 12px;
+            color: var(--secondary);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .add-skis-button:hover {
+            background: rgba(0, 137, 123, 0.05);
+            border-color: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 137, 123, 0.15);
+        }
+        
+        .plus-icon {
+            font-size: 24px;
+            line-height: 1;
+        }
+        
+        /* Ski List */
+        .ski-list {
+            display: grid;
+            gap: 12px;
+        }
+        
+        .ski-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            background: var(--mist);
+            border-radius: 12px;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .ski-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .ski-name {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 16px;
+        }
+        
+        .ski-details {
+            font-size: 14px;
+            color: var(--rock);
+        }
+        
+        .ski-remove {
+            padding: 8px 16px;
+            background: white;
+            border: 1px solid var(--mist);
+            border-radius: 8px;
+            color: var(--rock);
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .ski-remove:hover {
+            border-color: var(--error);
+            color: var(--error);
+            background: rgba(255, 82, 82, 0.05);
+        }
+        
+        /* Terms Checkbox */
+        .terms-wrapper {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        
+        .checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--mist);
+            border-radius: 4px;
+            cursor: pointer;
+            flex-shrink: 0;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .checkbox.checked {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        .checkbox.checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 14px;
+            animation: checkmark 0.3s ease;
+        }
+        
+        .terms-text {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .terms-text a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .terms-text a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Submit Button */
+        .submit-button {
+            width: 100%;
+            padding: 18px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .submit-button:hover:not(:disabled) {
+            background: #F44336;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 82, 82, 0.3);
+        }
+        
+        .submit-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .submit-button:active:not(:disabled) {
+            transform: translateY(0);
+        }
+        
+        /* Progress Indicator */
+        .progress-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin: 30px 0;
+        }
+        
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--mist);
+            transition: all 0.3s ease;
+        }
+        
+        .dot.active {
+            background: var(--primary);
+            transform: scale(1.3);
+        }
+        
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes pillBounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        @keyframes checkmark {
+            0% { transform: translate(-50%, -50%) scale(0); }
+            50% { transform: translate(-50%, -50%) scale(1.2); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 640px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .form-section {
+                padding: 20px 15px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .skill-options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">⛷️</div>
+            <h1>Create Your Skier Profile</h1>
+            <p class="subtitle">Share your mountain passion with the community</p>
+        </div>
+        
+        <form id="onboardingForm">
+            <!-- Skill Level Section -->
+            <div class="form-section">
+                <h2 class="section-title">
+                    Skier Ability Level <span class="required">*</span>
+                </h2>
+                <div class="skill-options">
+                    <div class="skill-option">
+                        <input type="radio" id="beginner" name="skill" value="beginner">
+                        <label for="beginner" class="skill-label">Beginner</label>
+                    </div>
+                    <div class="skill-option">
+                        <input type="radio" id="intermediate" name="skill" value="intermediate">
+                        <label for="intermediate" class="skill-label">Intermediate</label>
+                    </div>
+                    <div class="skill-option">
+                        <input type="radio" id="advanced" name="skill" value="advanced">
+                        <label for="advanced" class="skill-label">Advanced</label>
+                    </div>
+                    <div class="skill-option">
+                        <input type="radio" id="expert" name="skill" value="expert">
+                        <label for="expert" class="skill-label">Expert</label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Terrain Preferences Section -->
+            <div class="form-section">
+                <h2 class="section-title">Terrain Preferences</h2>
+                <div class="terrain-grid">
+                    <div class="terrain-pill" data-terrain="groomers">Groomers</div>
+                    <div class="terrain-pill" data-terrain="moguls">Moguls</div>
+                    <div class="terrain-pill" data-terrain="powder">Powder</div>
+                    <div class="terrain-pill" data-terrain="park">Park</div>
+                    <div class="terrain-pill" data-terrain="trees">Trees</div>
+                    <div class="terrain-pill" data-terrain="steeps">Steeps</div>
+                    <div class="terrain-pill" data-terrain="backcountry">Backcountry</div>
+                </div>
+            </div>
+            
+            <!-- Skiing Style Section -->
+            <div class="form-section">
+                <h2 class="section-title">Skiing Style Description</h2>
+                <textarea 
+                    class="textarea" 
+                    placeholder="Tell us about your skiing style, what you love about the mountains, or what makes a perfect ski day for you..."
+                    maxlength="500"
+                ></textarea>
+            </div>
+            
+            <!-- Resorts Section -->
+            <div class="form-section">
+                <h2 class="section-title">My Resorts</h2>
+                <div class="search-wrapper">
+                    <span class="search-icon">🔍</span>
+                    <input 
+                        type="text" 
+                        class="search-input" 
+                        placeholder="Search resorts..."
+                    >
+                </div>
+                <div class="selected-resorts">
+                    <!-- Example selected resorts -->
+                    <div class="resort-tag">
+                        Vail, CO
+                        <span class="remove">×</span>
+                    </div>
+                    <div class="resort-tag">
+                        Whistler Blackcomb, BC
+                        <span class="remove">×</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Skis Section -->
+            <div class="form-section">
+                <h2 class="section-title">My Skis</h2>
+                <button type="button" class="add-skis-button" id="addSkisBtn">
+                    <span class="plus-icon">+</span>
+                    Add Skis
+                </button>
+                <div class="ski-list" id="skiList">
+                    <!-- Skis will be displayed here after adding -->
+                </div>
+            </div>
+            
+            <!-- Terms Section -->
+            <div class="form-section">
+                <div class="terms-wrapper">
+                    <div class="checkbox" id="termsCheckbox"></div>
+                    <div class="terms-text">
+                        I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+                    </div>
+                </div>
+            </div>
+            
+            <button type="submit" class="submit-button" disabled>
+                Create Profile
+            </button>
+        </form>
+        
+        <div class="progress-dots">
+            <div class="dot active"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+    </div>
+    
+    <script>
+        // Terrain pill selection
+        const terrainPills = document.querySelectorAll('.terrain-pill');
+        terrainPills.forEach(pill => {
+            pill.addEventListener('click', () => {
+                pill.classList.toggle('selected');
+            });
+        });
+        
+        // Terms checkbox
+        const checkbox = document.getElementById('termsCheckbox');
+        let termsAccepted = false;
+        
+        checkbox.addEventListener('click', () => {
+            termsAccepted = !termsAccepted;
+            checkbox.classList.toggle('checked');
+            checkFormValidity();
+        });
+        
+        // Add Skis button
+        const addSkisBtn = document.getElementById('addSkisBtn');
+        const skiList = document.getElementById('skiList');
+        
+        // Example skis data (in real app, this would come from the modal)
+        const exampleSkis = [
+            { brand: 'Volkl', model: 'Mantra M6', year: '2024', length: '184cm' },
+            { brand: 'Salomon', model: 'QST 106', year: '2023', length: '181cm' }
+        ];
+        
+        addSkisBtn.addEventListener('click', () => {
+            // In real app, this would open the modal
+            // For demo, we'll add example skis
+            if (skiList.children.length === 0) {
+                exampleSkis.forEach((ski, index) => {
+                    setTimeout(() => {
+                        const skiItem = document.createElement('div');
+                        skiItem.className = 'ski-item';
+                        skiItem.innerHTML = `
+                            <div class="ski-info">
+                                <div class="ski-name">${ski.brand} ${ski.model}</div>
+                                <div class="ski-details">${ski.year} • ${ski.length}</div>
+                            </div>
+                            <button class="ski-remove" data-index="${index}">Remove</button>
+                        `;
+                        skiList.appendChild(skiItem);
+                    }, index * 100);
+                });
+                
+                // Change button text
+                addSkisBtn.innerHTML = '<span class="plus-icon">+</span> Add More Skis';
+            } else {
+                // Simulate modal open
+                alert('Ski entry modal would open here');
+            }
+        });
+        
+        // Remove ski functionality
+        skiList.addEventListener('click', (e) => {
+            if (e.target.classList.contains('ski-remove')) {
+                const skiItem = e.target.closest('.ski-item');
+                skiItem.style.animation = 'fadeOut 0.3s ease';
+                setTimeout(() => {
+                    skiItem.remove();
+                    if (skiList.children.length === 0) {
+                        addSkisBtn.innerHTML = '<span class="plus-icon">+</span> Add Skis';
+                    }
+                }, 300);
+            }
+        });
+        
+        // Resort tag removal
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('remove')) {
+                e.target.parentElement.style.animation = 'fadeOut 0.3s ease';
+                setTimeout(() => {
+                    e.target.parentElement.remove();
+                }, 300);
+            }
+        });
+        
+        // Form validation
+        const form = document.getElementById('onboardingForm');
+        const submitButton = document.querySelector('.submit-button');
+        const skillInputs = document.querySelectorAll('input[name="skill"]');
+        
+        function checkFormValidity() {
+            const skillSelected = Array.from(skillInputs).some(input => input.checked);
+            
+            if (skillSelected && termsAccepted) {
+                submitButton.disabled = false;
+            } else {
+                submitButton.disabled = true;
+            }
+        }
+        
+        skillInputs.forEach(input => {
+            input.addEventListener('change', checkFormValidity);
+        });
+        
+        // Form submission
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            submitButton.textContent = 'Creating Profile...';
+            submitButton.style.background = 'var(--success)';
+            
+            // Simulate submission
+            setTimeout(() => {
+                submitButton.textContent = '✓ Profile Created!';
+                submitButton.style.background = 'var(--success)';
+            }, 2000);
+        });
+        
+        // Add fade out animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeOut {
+                to {
+                    opacity: 0;
+                    transform: scale(0.8);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

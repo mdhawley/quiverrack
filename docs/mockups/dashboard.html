@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - QuiverRack</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #0D47A1;
+            --secondary: #00897B;
+            --accent: #FF5252;
+            --snow: #FFFFFF;
+            --rock: #757575;
+            --mist: #F5F5F5;
+            --success: #00897B;
+            --error: #FF5252;
+            --shadow: 0 2px 20px rgba(0,0,0,0.06);
+            --warning: #FFA726;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #F5F7FA;
+            min-height: 100vh;
+            color: var(--rock);
+            line-height: 1.6;
+        }
+        
+        /* Header */
+        .header {
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            transform: rotate(-10deg);
+        }
+        
+        .logo-text {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .view-profile-btn {
+            padding: 10px 20px;
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .view-profile-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 12px;
+            transition: background 0.2s;
+        }
+        
+        .user-menu:hover {
+            background: var(--mist);
+        }
+        
+        /* Main Layout */
+        .profile-layout {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px 20px;
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+        
+        @media (max-width: 968px) {
+            .profile-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Left Sidebar - User Card */
+        .user-card {
+            background: white;
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 100px;
+            animation: fadeInLeft 0.8s ease;
+            max-height: calc(100vh - 120px);
+            overflow-y: auto;
+        }
+        
+        @media (max-width: 968px) {
+            .user-card {
+                position: relative;
+                top: 0;
+                max-height: none;
+            }
+        }
+        
+        /* Edit Mode Indicators */
+        .editable-section {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .edit-button {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 6px 12px;
+            background: white;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.2s ease;
+        }
+        
+        .editable-section:hover .edit-button {
+            opacity: 1;
+        }
+        
+        .edit-button:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        /* Avatar with Edit */
+        .avatar-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+        }
+        
+        .user-avatar {
+            width: 100%;
+            height: 100%;
+            background: var(--secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 48px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+        }
+        
+        .avatar-container:hover .user-avatar {
+            opacity: 0.8;
+        }
+        
+        .avatar-edit-overlay {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 36px;
+            height: 36px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            border: 3px solid white;
+            transition: transform 0.2s ease;
+        }
+        
+        .avatar-container:hover .avatar-edit-overlay {
+            transform: scale(1.1);
+        }
+        
+        /* Empty State Prompts */
+        .empty-prompt {
+            padding: 16px;
+            background: #FFF3E0;
+            border: 2px dashed var(--warning);
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .empty-prompt:hover {
+            background: #FFE0B2;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 167, 38, 0.2);
+        }
+        
+        .empty-prompt-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        
+        .empty-prompt-text {
+            font-size: 14px;
+            color: var(--rock);
+            font-weight: 500;
+        }
+        
+        .empty-prompt-cta {
+            font-size: 12px;
+            color: var(--warning);
+            font-weight: 600;
+            margin-top: 4px;
+        }
+        
+        /* Profile Completion */
+        .profile-completion {
+            padding: 16px;
+            background: var(--mist);
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .completion-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .completion-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .completion-percentage {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--secondary);
+        }
+        
+        .completion-bar {
+            width: 100%;
+            height: 8px;
+            background: white;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .completion-fill {
+            height: 100%;
+            background: var(--secondary);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        
+        /* User Info */
+        .user-name {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 8px;
+        }
+        
+        .user-location {
+            text-align: center;
+            color: var(--rock);
+            margin-bottom: 8px;
+        }
+        
+        .user-member-since {
+            text-align: center;
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 24px;
+        }
+        
+        /* User Stats */
+        .user-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        
+        .stat {
+            padding: 12px;
+            background: var(--mist);
+            border-radius: 12px;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: var(--rock);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Share Section */
+        .share-section {
+            padding: 16px;
+            background: var(--mist);
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .share-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 12px;
+        }
+        
+        .share-url {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            background: white;
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: monospace;
+            color: var(--rock);
+            margin-bottom: 12px;
+        }
+        
+        .copy-button {
+            padding: 6px 12px;
+            background: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .copy-button:hover {
+            background: #00796B;
+        }
+        
+        .privacy-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 12px;
+            border-top: 1px solid var(--mist);
+        }
+        
+        .toggle-label {
+            font-size: 14px;
+            color: var(--rock);
+        }
+        
+        .toggle-switch {
+            position: relative;
+            width: 48px;
+            height: 24px;
+            background: #ccc;
+            border-radius: 24px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .toggle-switch.active {
+            background: var(--secondary);
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+        
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(24px);
+        }
+        
+        /* User Bio */
+        .user-bio {
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--rock);
+            padding: 16px;
+            background: var(--mist);
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-style: italic;
+            position: relative;
+        }
+        
+        /* Sidebar Sections */
+        .sidebar-section {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--mist);
+            position: relative;
+        }
+        
+        .sidebar-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .sidebar-section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--rock);
+            margin-bottom: 10px;
+        }
+        
+        .detail-icon {
+            width: 24px;
+            font-size: 18px;
+            text-align: center;
+        }
+        
+        .mountain-list {
+            display: grid;
+            gap: 8px;
+        }
+        
+        .mountain-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: var(--rock);
+            padding: 8px 12px;
+            background: var(--mist);
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+        
+        .mountain-item:hover {
+            background: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+        
+        /* Right Content Area */
+        .content-area {
+            animation: fadeInRight 0.8s ease;
+        }
+        
+        /* Tab Navigation */
+        .tab-nav {
+            background: white;
+            border-radius: 16px;
+            padding: 8px;
+            margin-bottom: 24px;
+            display: flex;
+            gap: 4px;
+            box-shadow: var(--shadow);
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 12px 20px;
+            background: transparent;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--rock);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .tab.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .tab:hover:not(.active) {
+            background: var(--mist);
+        }
+        
+        /* Quiver Section */
+        .quiver-section {
+            background: white;
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+            position: relative;
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+        
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .ski-count {
+            padding: 6px 16px;
+            background: var(--mist);
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--rock);
+        }
+        
+        /* Add Photo Prompt */
+        .add-photo-prompt {
+            width: 100%;
+            height: 300px;
+            background: #F5F7FA;
+            border: 3px dashed var(--secondary);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 24px;
+        }
+        
+        .add-photo-prompt:hover {
+            background: #E8F5E9;
+            border-color: var(--primary);
+            transform: scale(1.01);
+        }
+        
+        .add-photo-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+            color: var(--secondary);
+        }
+        
+        .add-photo-text {
+            font-size: 16px;
+            color: var(--rock);
+            margin-bottom: 8px;
+        }
+        
+        .add-photo-cta {
+            font-size: 14px;
+            color: var(--secondary);
+            font-weight: 600;
+        }
+        
+        /* Ski Grid */
+        .ski-grid {
+            display: grid;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .ski-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            background: var(--mist);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            cursor: default;
+            position: relative;
+        }
+        
+        .ski-item:hover {
+            background: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        
+        .ski-item:hover .ski-actions {
+            opacity: 1;
+        }
+        
+        .ski-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex: 1;
+        }
+        
+        .ski-icon {
+            font-size: 32px;
+        }
+        
+        .ski-details {
+            flex: 1;
+        }
+        
+        .ski-name {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+        
+        .ski-specs {
+            display: flex;
+            gap: 16px;
+            font-size: 14px;
+            color: var(--rock);
+        }
+        
+        .ski-spec {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        /* Editable Ski Specs */
+        .ski-spec-editable {
+            padding: 2px 6px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        
+        .ski-spec-editable:hover {
+            background: var(--mist);
+        }
+        
+        .ski-spec-editable:hover::after {
+            content: '✏️';
+            position: absolute;
+            right: -18px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 12px;
+            opacity: 0.7;
+        }
+        
+        .ski-spec-input {
+            background: white;
+            border: 2px solid var(--primary);
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-size: 14px;
+            font-family: inherit;
+            color: var(--rock);
+            width: 60px;
+            outline: none;
+        }
+        
+        .ski-spec-select {
+            background: white;
+            border: 2px solid var(--primary);
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-size: 14px;
+            font-family: inherit;
+            color: var(--rock);
+            outline: none;
+            cursor: pointer;
+        }
+        
+        /* Verified Badge */
+        .ski-verified {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            background: var(--success);
+            color: white;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        
+        .ski-manual {
+            background: var(--warning);
+        }
+        
+        .ski-types {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+        
+        .ski-type {
+            padding: 4px 10px;
+            background: white;
+            border: 1px solid var(--secondary);
+            color: var(--secondary);
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        
+        /* Ski Actions */
+        .ski-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+        
+        .action-button {
+            padding: 6px 10px;
+            background: white;
+            border: 1px solid var(--mist);
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .action-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .action-button.delete {
+            color: var(--error);
+        }
+        
+        .action-button.delete:hover {
+            background: var(--error);
+            color: white;
+            border-color: var(--error);
+        }
+        
+        /* Delete Confirmation */
+        .delete-confirmation {
+            position: absolute;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            background: white;
+            border: 1px solid var(--error);
+            border-radius: 8px;
+            padding: 12px 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: none;
+            align-items: center;
+            gap: 12px;
+            z-index: 10;
+        }
+        
+        .delete-confirmation.show {
+            display: flex;
+        }
+        
+        .delete-text {
+            font-size: 14px;
+            color: var(--rock);
+        }
+        
+        .delete-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .confirm-button {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .confirm-button.cancel {
+            background: var(--mist);
+            color: var(--rock);
+        }
+        
+        .confirm-button.cancel:hover {
+            background: var(--rock);
+            color: white;
+        }
+        
+        .confirm-button.confirm {
+            background: var(--error);
+            color: white;
+        }
+        
+        .confirm-button.confirm:hover {
+            background: #E53935;
+        }
+        
+        /* Add Ski Button */
+        .add-ski-button {
+            width: 100%;
+            padding: 16px;
+            background: white;
+            border: 2px dashed var(--secondary);
+            border-radius: 12px;
+            color: var(--secondary);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .add-ski-button:hover {
+            background: rgba(0, 137, 123, 0.05);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 137, 123, 0.15);
+        }
+        
+        /* Animations */
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="/" class="logo">
+                <div class="logo-icon">⛷️</div>
+                <div class="logo-text">QuiverRack</div>
+            </a>
+            
+            <div class="nav-actions">
+                <a href="/profile/johndoe" class="view-profile-btn">View Public Profile</a>
+                <div class="user-menu">
+                    <span>Settings</span>
+                    <span style="color: var(--rock);">▼</span>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main Profile Layout -->
+    <main class="profile-layout">
+        <!-- Left Sidebar - User Card -->
+        <aside class="user-card">
+            <!-- Profile Completion -->
+            <div class="profile-completion">
+                <div class="completion-header">
+                    <span class="completion-title">Profile Completion</span>
+                    <span class="completion-percentage">75%</span>
+                </div>
+                <div class="completion-bar">
+                    <div class="completion-fill" style="width: 75%;"></div>
+                </div>
+            </div>
+            
+            <!-- Avatar -->
+            <div class="avatar-container">
+                <div class="user-avatar">JD</div>
+                <div class="avatar-edit-overlay">📷</div>
+            </div>
+            
+            <h1 class="user-name">John Doe</h1>
+            <p class="user-location">Denver, Colorado</p>
+            <p class="user-member-since">Member since December 2023</p>
+            
+            <div class="user-stats">
+                <div class="stat">
+                    <div class="stat-value">4</div>
+                    <div class="stat-label">Skis</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">4</div>
+                    <div class="stat-label">Mountains</div>
+                </div>
+            </div>
+            
+            <!-- Share & Privacy -->
+            <div class="share-section">
+                <h3 class="share-title">Share Your Profile</h3>
+                <div class="share-url">
+                    <span>🔗</span>
+                    <span>quiverrack.com/profile/johndoe</span>
+                </div>
+                <button class="copy-button" onclick="copyUrl()">Copy Link</button>
+                <div class="privacy-toggle">
+                    <span class="toggle-label">Public Profile</span>
+                    <div class="toggle-switch active" onclick="togglePrivacy(this)">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Bio Section -->
+            <div class="editable-section">
+                <div class="user-bio">
+                    "Nothing beats floating through fresh powder on a bluebird day. I live for those moments when the snow is deep, the trees are perfectly spaced, and the only sound is the whisper of snow beneath my skis."
+                </div>
+                <button class="edit-button" onclick="editBio()">Edit</button>
+            </div>
+            
+            <!-- Details Section -->
+            <div class="sidebar-section editable-section">
+                <h3 class="sidebar-section-title">Details</h3>
+                <div class="detail-item">
+                    <span class="detail-icon">🎿</span>
+                    <span><strong>Expert</strong> Skier</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-icon">🏔️</span>
+                    <span>Powder, Trees, Steeps</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-icon">📍</span>
+                    <span>@johndoe</span>
+                </div>
+                <button class="edit-button" onclick="editDetails()">Edit</button>
+            </div>
+            
+            <!-- Home Mountains -->
+            <div class="sidebar-section editable-section">
+                <h3 class="sidebar-section-title">Home Mountains</h3>
+                <div class="mountain-list">
+                    <div class="mountain-item">
+                        <span>🎿</span>
+                        <span>Mt. Hood Meadows</span>
+                    </div>
+                    <div class="mountain-item">
+                        <span>🎿</span>
+                        <span>Timberline</span>
+                    </div>
+                    <div class="mountain-item">
+                        <span>🎿</span>
+                        <span>Mt. Hood Skibowl</span>
+                    </div>
+                    <div class="mountain-item">
+                        <span>🎿</span>
+                        <span>Mt. Bachelor</span>
+                    </div>
+                </div>
+                <button class="edit-button" onclick="editMountains()">Edit</button>
+            </div>
+        </aside>
+        
+        <!-- Right Content Area -->
+        <div class="content-area">
+            <!-- Tab Navigation -->
+            <nav class="tab-nav">
+                <button class="tab active">Quiver</button>
+                <button class="tab">Skiing Style</button>
+                <button class="tab">Activity</button>
+            </nav>
+            
+            <!-- Quiver Section -->
+            <section class="quiver-section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <span>🎿</span>
+                        Ski Quiver
+                    </h2>
+                    <span class="ski-count">4 skis</span>
+                </div>
+                
+                <!-- Add Photo Prompt -->
+                <div class="add-photo-prompt" onclick="addQuiverPhoto()">
+                    <div class="add-photo-icon">📸</div>
+                    <div class="add-photo-text">Show off your ski collection!</div>
+                    <div class="add-photo-cta">Click to upload quiver photo</div>
+                </div>
+                
+                <!-- Ski List -->
+                <div class="ski-grid">
+                    <div class="ski-item">
+                        <div class="ski-info">
+                            <div class="ski-icon">🎿</div>
+                            <div class="ski-details">
+                                <div class="ski-name">Volkl Mantra M6</div>
+                                <div class="ski-specs">
+                                    <span class="ski-spec ski-spec-editable" onclick="editSpec(this, 'year')" data-value="2024">2024</span>
+                                    <span class="ski-spec">•</span>
+                                    <span class="ski-spec ski-spec-editable" onclick="editSpec(this, 'length')" data-value="184">184cm</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ski-actions">
+                            <button class="action-button delete" onclick="deleteSki(this)">
+                                <span>🗑️</span>
+                                Delete
+                            </button>
+                        </div>
+                        <div class="delete-confirmation">
+                            <span class="delete-text">Delete this ski?</span>
+                            <div class="delete-actions">
+                                <button class="confirm-button cancel" onclick="cancelDelete(this)">Cancel</button>
+                                <button class="confirm-button confirm" onclick="confirmDelete(this)">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="ski-item">
+                        <div class="ski-info">
+                            <div class="ski-icon">🎿</div>
+                            <div class="ski-details">
+                                <div class="ski-name">Salomon QST 106</div>
+                                <div class="ski-specs">
+                                    <span class="ski-spec ski-spec-editable" onclick="editSpec(this, 'year')" data-value="2023">2023</span>
+                                    <span class="ski-spec">•</span>
+                                    <span class="ski-spec ski-spec-editable" onclick="editSpec(this, 'length')" data-value="181">181cm</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ski-actions">
+                            <button class="action-button delete" onclick="deleteSki(this)">
+                                <span>🗑️</span>
+                                Delete
+                            </button>
+                        </div>
+                        <div class="delete-confirmation">
+                            <span class="delete-text">Delete this ski?</span>
+                            <div class="delete-actions">
+                                <button class="confirm-button cancel" onclick="cancelDelete(this)">Cancel</button>
+                                <button class="confirm-button confirm" onclick="confirmDelete(this)">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="ski-item">
+                        <div class="ski-info">
+                            <div class="ski-icon">🎿</div>
+                            <div class="ski-details">
+                                <div class="ski-name">Atomic Bent Chetler 100</div>
+                                <div class="ski-specs">
+                                    <span class="ski-spec ski-spec-editable" onclick="editSpec(this, 'year')" data-value="2023">2023</span>
+                                    <span class="ski-spec">•</span>
+                                    <span class="ski-spec ski-spec-editable" onclick="editSpec(this, 'length')" data-value="180">180cm</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ski-actions">
+                            <button class="action-button delete" onclick="deleteSki(this)">
+                                <span>🗑️</span>
+                                Delete
+                            </button>
+                        </div>
+                        <div class="delete-confirmation">
+                            <span class="delete-text">Delete this ski?</span>
+                            <div class="delete-actions">
+                                <button class="confirm-button cancel" onclick="cancelDelete(this)">Cancel</button>
+                                <button class="confirm-button confirm" onclick="confirmDelete(this)">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="ski-item">
+                        <div class="ski-info">
+                            <div class="ski-icon">🎿</div>
+                            <div class="ski-details">
+                                <div class="ski-name">Blizzard Bonafide 97</div>
+                                <div class="ski-specs">
+                                    <span class="ski-spec ski-spec-editable" onclick="editSpec(this, 'year')" data-value="2022">2022</span>
+                                    <span class="ski-spec">•</span>
+                                    <span class="ski-spec ski-spec-editable" onclick="editSpec(this, 'length')" data-value="183">183cm</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ski-actions">
+                            <button class="action-button delete" onclick="deleteSki(this)">
+                                <span>🗑️</span>
+                                Delete
+                            </button>
+                        </div>
+                        <div class="delete-confirmation">
+                            <span class="delete-text">Delete this ski?</span>
+                            <div class="delete-actions">
+                                <button class="confirm-button cancel" onclick="cancelDelete(this)">Cancel</button>
+                                <button class="confirm-button confirm" onclick="confirmDelete(this)">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Add Ski Button -->
+                <button class="add-ski-button" onclick="addSki()">
+                    <span style="font-size: 20px;">+</span>
+                    Add Another Ski
+                </button>
+            </section>
+            
+            <!-- Empty State Examples -->
+            <section class="quiver-section" style="display: none;">
+                <h2 class="section-title">
+                    <span>💭</span>
+                    Skiing Style
+                </h2>
+                <div class="empty-prompt" onclick="addSkiingStyle()">
+                    <div class="empty-prompt-icon">✍️</div>
+                    <div class="empty-prompt-text">Tell others about your skiing style!</div>
+                    <div class="empty-prompt-cta">Click to add description</div>
+                </div>
+            </section>
+        </div>
+    </main>
+    
+    <script>
+        // Tab switching
+        const tabs = document.querySelectorAll('.tab');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+            });
+        });
+        
+        // Copy URL
+        function copyUrl() {
+            const url = 'https://quiverrack.com/profile/johndoe';
+            navigator.clipboard.writeText(url).then(() => {
+                const button = document.querySelector('.copy-button');
+                button.textContent = '✓ Copied!';
+                setTimeout(() => {
+                    button.textContent = 'Copy Link';
+                }, 2000);
+            });
+        }
+        
+        // Toggle Privacy
+        function togglePrivacy(toggle) {
+            toggle.classList.toggle('active');
+        }
+        
+        // Inline editing for ski specs
+        function editSpec(element, type, isVerified) {
+            const currentValue = element.getAttribute('data-value');
+            
+            if (isVerified) {
+                // For verified skis, create a dropdown with valid options
+                const select = document.createElement('select');
+                select.className = 'ski-spec-select';
+                
+                // Get available options from data attribute
+                const options = element.getAttribute('data-options').split(',');
+                options.forEach(option => {
+                    const opt = document.createElement('option');
+                    opt.value = option;
+                    opt.textContent = type === 'length' ? option + 'cm' : option;
+                    if (option === currentValue) {
+                        opt.selected = true;
+                    }
+                    select.appendChild(opt);
+                });
+                
+                select.onchange = function() {
+                    saveSpec(element, select.value, type, isVerified);
+                };
+                
+                select.onblur = function() {
+                    saveSpec(element, select.value, type, isVerified);
+                };
+                
+                element.replaceWith(select);
+                select.focus();
+                
+            } else {
+                // For manual entries, use text input
+                const input = document.createElement('input');
+                input.type = type === 'year' ? 'number' : 'text';
+                input.value = currentValue;
+                input.className = 'ski-spec-input';
+                
+                if (type === 'year') {
+                    input.min = '1990';
+                    input.max = '2030';
+                    input.style.width = '70px';
+                } else {
+                    input.style.width = '60px';
+                }
+                
+                input.onblur = function() {
+                    saveSpec(element, input.value, type, isVerified);
+                };
+                
+                input.onkeypress = function(e) {
+                    if (e.key === 'Enter') {
+                        saveSpec(element, input.value, type, isVerified);
+                    }
+                };
+                
+                element.replaceWith(input);
+                input.focus();
+                input.select();
+            }
+        }
+        
+        function saveSpec(originalElement, newValue, type, isVerified) {
+            const span = document.createElement('span');
+            span.className = 'ski-spec ski-spec-editable';
+            span.onclick = function() { editSpec(this, type, isVerified); };
+            span.setAttribute('data-value', newValue);
+            if (isVerified && originalElement.getAttribute('data-options')) {
+                span.setAttribute('data-options', originalElement.getAttribute('data-options'));
+            }
+            span.textContent = type === 'length' ? newValue + 'cm' : newValue;
+            
+            const currentInput = document.querySelector('.ski-spec-input, .ski-spec-select');
+            if (currentInput) {
+                currentInput.replaceWith(span);
+            }
+            
+            // Here you would save to the database
+            console.log(`Updated ${type} to ${newValue} for ${isVerified ? 'verified' : 'manual'} ski`);
+        }
+        
+        // Delete ski functions
+        function deleteSki(button) {
+            const skiItem = button.closest('.ski-item');
+            const confirmation = skiItem.querySelector('.delete-confirmation');
+            confirmation.classList.add('show');
+        }
+        
+        function cancelDelete(button) {
+            const confirmation = button.closest('.delete-confirmation');
+            confirmation.classList.remove('show');
+        }
+        
+        function confirmDelete(button) {
+            const skiItem = button.closest('.ski-item');
+            skiItem.style.opacity = '0';
+            skiItem.style.transform = 'translateX(-20px)';
+            
+            setTimeout(() => {
+                skiItem.remove();
+                // Update ski count
+                updateSkiCount();
+            }, 300);
+        }
+        
+        function updateSkiCount() {
+            const skiCount = document.querySelectorAll('.ski-item').length;
+            document.querySelector('.ski-count').textContent = `${skiCount} skis`;
+            document.querySelector('.stat-value').textContent = skiCount;
+        }
+    </script>
+</body>
+</html>
